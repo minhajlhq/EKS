@@ -1,0 +1,48 @@
+replicaCount: 2
+
+image:
+  repository: 298717586040.dkr.ecr.us-east-1.amazonaws.com/troubleshoot-eks-131-app
+  tag: "sha-PLACEHOLDER"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+livenessProbe:
+  path: /healthz
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  path: /healthz
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 60
+
+# security hardening to match your container
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+
+writablePaths:
+  - name: tmp
+    mountPath: /app/tmp
