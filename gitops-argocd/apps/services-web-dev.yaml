@@ -11,7 +11,7 @@ spec:
     path: services-web/chart
     helm:
       valueFiles:
-        - gitops-argocd/envs/dev/values.yaml
+        - ../../gitops-argocd/envs/dev/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
