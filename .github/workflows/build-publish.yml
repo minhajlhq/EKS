@@ -1,0 +1,55 @@
+name: build-publish
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "services-web/**"
+      - "gitops-argocd/envs/dev/values.yaml"
+      - ".github/workflows/build-publish.yml"
+
+permissions:
+  id-token: write      # OIDC to AWS
+  contents: write      # to commit the tag bump back to this repo
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+  ECR_REPO:   ${{ vars.ECR_REPO }}   # or hardcode the string here
+
+jobs:
+  build-push-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Derive tag from commit
+        run: echo "SHA_TAG=sha-${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push image
+        run: |
+          docker build -t "$ECR_REPO:${SHA_TAG}" ./services-web
+          docker push "$ECR_REPO:${SHA_TAG}"
+
+      # Prevent infinite loop: add [skip ci] so this commit doesn't re-trigger
+      - name: Bump dev image tag in values.yaml
+        run: |
+          set -e
+          FILE="gitops-argocd/envs/dev/values.yaml"
+          sed -i.bak "s/^  tag: .*/  tag: \"${SHA_TAG}\"/" "$FILE"
+          if git diff --quiet -- "$FILE"; then
+            echo "No changes to $FILE; skipping commit."
+            exit 0
+          fi
+          git config user.name  "ci-bot"
+          git config user.email "ci-bot@example.com"
+          git add "$FILE"
+          git commit -m "chore(dev): bump services-web to ${SHA_TAG} [skip ci]"
+          git push
