@@ -1,5 +1,5 @@
 image:
-  repository: <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/troubleshoot-eks-131-app
+  repository: 298717586040.dkr.ecr.us-east-1.amazonaws.com/troubleshoot-eks-131-app
   tag: "sha-ecbc019"
 replicaCount: 2
 
