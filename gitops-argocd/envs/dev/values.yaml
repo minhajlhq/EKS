@@ -1,6 +1,6 @@
 image:
   repository: <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/troubleshoot-eks-131-app
-  tag: "sha-PLACEHOLDER"
+  tag: "sha-9b46384"
 replicaCount: 2
 
 securityContext:
