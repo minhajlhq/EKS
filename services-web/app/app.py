@@ -16,7 +16,7 @@ def healthz():
 
 @app.route("/")
 def root():
-    return "hello", 200
+    return "hello world", 200
 
 @app.route("/counter")
 def counter():
