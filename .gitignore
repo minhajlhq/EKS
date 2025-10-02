@@ -15,3 +15,18 @@ override.tf.json
 .vscode/
 .idea/
 *.bak
+
+# Terraform state & local cache
+.terraform/
+.terraform.tfstate.lock.info
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*.tfvars
+*.auto.tfvars
+
+# Kube & misc
+kubeconfig
+*.pem

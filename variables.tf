@@ -17,3 +17,8 @@ variable "node_instance_types" {
   type    = list(string)
   default = ["t3.large"]
 }
+
+variable "grafana_admin_password" {
+  type      = string
+  sensitive = true
+}

@@ -1,0 +1,61 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: custom-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: k8s-core.rules
+    rules:
+    - alert: PodCrashLooping
+      expr: rate(kube_pod_container_status_restarts_total[5m]) > 0 and on (pod, namespace)
+        kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1
+      for: 5m
+      labels: { severity: warning }
+      annotations:
+        summary: "Pod CrashLoopBackOff"
+        description: "{{ $labels.namespace }}/{{ $labels.pod }} is crash looping"
+
+    - alert: DeploymentNotAvailable
+      expr: kube_deployment_status_replicas_available < kube_deployment_spec_replicas
+      for: 10m
+      labels: { severity: warning }
+      annotations:
+        summary: "Deployment not fully available"
+        description: "{{ $labels.namespace }}/{{ $labels.deployment }} has unavailable replicas"
+
+    - alert: HighNodeCPU
+      expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+      for: 5m
+      labels: { severity: warning }
+      annotations:
+        summary: "High CPU on node"
+        description: "CPU >80% for 5m on {{ $labels.instance }}"
+
+    - alert: NodeMemoryPressure
+      expr: kube_node_status_condition{condition="MemoryPressure",status="true"} == 1
+      for: 2m
+      labels: { severity: warning }
+      annotations:
+        summary: "Node memory pressure"
+        description: "Node {{ $labels.node }} reports MemoryPressure"
+
+    - alert: Ingress5xxHigh
+      expr: rate(aws_applicationelb_httpcode_target_5_xx_count_sum[5m]) > 5
+      for: 5m
+      labels: { severity: warning }
+      annotations:
+        summary: "ALB 5xx elevated"
+        description: "ALB target 5xx > 5/5m"
+
+    - alert: TestAlertAlwaysFiring
+      expr: vector(1)
+      for: 30s
+      labels: { severity: info }
+      annotations:
+        summary: "Test alert"
+        description: "Intentional test to validate alerting path"
+
+
