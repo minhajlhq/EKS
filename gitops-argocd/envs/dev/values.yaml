@@ -1,0 +1,16 @@
+image:
+  repository: <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/troubleshoot-eks-131-app
+  tag: "sha-PLACEHOLDER"
+replicaCount: 2
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+
+writablePaths:
+  - name: tmp
+    mountPath: /app/tmp
