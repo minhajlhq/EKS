@@ -1,3 +1,7 @@
+extraEnvFrom: []
+extraEnv: []
+
+
 replicaCount: 2
 
 image:

@@ -18,6 +18,14 @@ spec:
         - name: web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.extraEnvFrom }}
+          envFrom:
+{{ toYaml .Values.extraEnvFrom | indent 12 }}
+{{- end }}
+{{- if .Values.extraEnv }}
+          env:
+{{ toYaml .Values.extraEnv | indent 12 }}
+{{- end }}
           ports:
             - containerPort: {{ .Values.service.targetPort }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
