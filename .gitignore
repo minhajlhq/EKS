@@ -30,3 +30,6 @@ override.tf.json
 # Kube & misc
 kubeconfig
 *.pem
+
+# local logs
+*.log
