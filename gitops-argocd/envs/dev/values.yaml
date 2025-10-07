@@ -14,3 +14,6 @@ securityContext:
 writablePaths:
   - name: tmp
     mountPath: /app/tmp
+extraEnvFrom:
+  - configMapRef:
+      name: web-settings
