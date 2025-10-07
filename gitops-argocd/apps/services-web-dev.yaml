@@ -22,3 +22,8 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - PruneLast=true
+
+  extraEnvFrom:
+  configMapRef:
+  name: web-settings   # ← intentionally missing
+
