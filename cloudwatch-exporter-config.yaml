@@ -1,0 +1,22 @@
+config:
+  region: us-east-1
+  period_seconds: 60
+  range_seconds: 600
+  delay_seconds: 120
+  metrics:
+    - aws_namespace: AWS/ApplicationELB
+      aws_dimension_select:
+        LoadBalancer: []     # leave [] to scrape all; or put your ALB resource ID to filter
+      aws_metric_name: RequestCount
+      aws_statistics: [ Sum ]
+    - aws_namespace: AWS/ApplicationELB
+      aws_dimension_select:
+        LoadBalancer: []
+      aws_metric_name: TargetResponseTime
+      aws_statistics: [ Average, p90, p99 ]
+    - aws_namespace: AWS/ApplicationELB
+      aws_dimension_select:
+        LoadBalancer: []
+      aws_metric_name: HTTPCode_Target_5XX_Count
+      aws_statistics: [ Sum ]
+
