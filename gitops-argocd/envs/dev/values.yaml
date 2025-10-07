@@ -1,6 +1,6 @@
 image:
   repository: 298717586040.dkr.ecr.us-east-1.amazonaws.com/troubleshoot-eks-131-app
-  tag: "sha-ec4d22f"
+  tag: "sha-0605970"
 replicaCount: 2
 
 securityContext:
