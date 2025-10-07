@@ -50,3 +50,8 @@ securityContext:
 writablePaths:
   - name: tmp
     mountPath: /app/tmp
+webSettings:
+  create: true
+  data:
+    MODE: dev
+    FEATURE_FLAG: "true"

@@ -1,0 +1,11 @@
+{{- if .Values.webSettings.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-settings
+  namespace: {{ .Release.Namespace }}
+data:
+{{- range $k, $v := .Values.webSettings.data }}
+  {{ $k }}: "{{ $v }}"
+{{- end }}
+{{- end }}
